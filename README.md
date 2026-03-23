@@ -1,2 +1,2 @@
-# polyrythm_website
-Webapp to create synth base polyrythms
+# Orbitone
+Webapp to create synth based polyrythms
