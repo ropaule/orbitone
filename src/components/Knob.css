@@ -1,0 +1,97 @@
+.knob-container {
+  --knob-scale: 1; 
+  --base-size: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 10px;
+  width: fit-content;
+}
+
+.knob-wrapper {
+  position: relative;
+  width: calc(var(--base-size) * var(--knob-scale));
+  height: calc(var(--base-size) * var(--knob-scale));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.knob-wrapper:active {
+  cursor: grabbing;
+}
+
+.knob-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(135deg);
+  pointer-events: none;
+}
+
+/* IMPORTANT: Inside a viewBox="0 0 100 100", 
+   these stroke widths are RELATIVE to the 100 units, 
+   not pixels. They will scale perfectly with the knob.
+*/
+.knob-track {
+  fill: none;
+  stroke: var(--shadow-dark);
+  stroke-width: 3; 
+  stroke-linecap: round;
+  opacity: 0.3;
+}
+
+.knob-progress {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  /*filter: drop-shadow(0 0 2px var(--color-accent-glow));*/
+}
+
+.knob-disk {
+  width: 68%;
+  height: 68%;
+  background: var(--color-knob-main);
+  border-radius: 50%;
+  position: relative;
+  will-change: transform;
+  
+  box-shadow: 
+    calc(6px * var(--knob-scale)) calc(6px * var(--knob-scale)) calc(12px * var(--knob-scale)) var(--shadow-dark), 
+    calc(-6px * var(--knob-scale)) calc(-6px * var(--knob-scale)) calc(12px * var(--knob-scale)) var(--shadow-light);
+  
+  display: flex;
+  justify-content: center;
+}
+
+.knob-pointer {
+  width: calc(2px * var(--knob-scale));
+  height: calc(15px * var(--knob-scale));
+  background: var(--color-pointer);
+  margin-top: calc(8px * var(--knob-scale));
+  border-radius: 1px;
+  will-change: transform;
+  transform-origin: 50% calc(26px * var(--knob-scale)); 
+}
+
+/* --- TEXT UPDATES: Fixed at "m" size --- */
+
+.knob-label {
+  margin-top: 12px;           /* Fixed margin */
+  font-size: 0.75rem;        /* Fixed font size */
+  font-weight: 700;
+  color: var(--color-text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.knob-value-display {
+  margin-top: 2px;            /* Fixed margin */
+  font-size: 0.7rem;          /* Fixed font size */
+  color: var(--color-text-value);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,51 @@
+.app-container {
+  display: flex;         /* This puts Sidebar and Main next to each other */
+  width: 100vw;          /* Full width of the screen */
+  height: 100vh;         /* Full height of the screen */
+  background-color: #dadada; /* Match your knob background */
+  overflow: hidden;      /* Prevents weird scrollbars */
+}
+
+.stage {
+  flex: 1;           /* Takes up the remaining horizontal space */
+  padding: 20px;     /* Space from the top and sides */
+  
+}
+
+.sidebar {
+  width: 260px;          /* Professional fixed width for sidebars */
+  height: 100%;
+  background-color: #e8e8e8;
+  border-left: 1px solid rgba(0,0,0,0.1); /* Subtle separation line */
+  padding: 30px 20px;
+  
+  /* Inner shadow to give it that "recessed" premium look */
+  box-shadow: inset -5px 0 15px rgba(0,0,0,0.02);
+  
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo-text {
+  margin: 0;
+}
+
+.logo-light {
+  font-weight: 300;
+}
+
+.main-controls {
+  display: flex !important; /* Force flex mode */
+  flex-direction: row;      /* horizontal */      
+  justify-content: center;  /* Center them in the panel */
+  align-items: flex-start;  /* Align them by their tops */
+  width: 100%;  
+}
+
+.main-knobs {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-end; /* Aligns the text labels in a straight line */
+}

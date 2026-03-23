@@ -1,0 +1,43 @@
+/* Apply to every single element in the project */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Remove default browser margins that cause "ghost" spacing */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* This kills the scrollbars for good */
+}
+
+:root {
+  /* Brand / Accent Colors */
+  --color-accent: #2e5bc7;      /* The blue from your image */
+  --color-accent-glow: rgba(41, 89, 202, 0.4);
+
+  /* Neumorphic Base Colors */
+  --color-bg: #e0e0e0;          /* Main background */
+  --color-knob-main: #dadada;   /* Knob surface */
+  
+  /* Shadow Colors */
+  --shadow-dark: #bcbcbc;       /* Darker shadow for depth */
+  --shadow-light: #f8f8f8;      /* Light highlight for lift */
+
+  /* Text & Details */
+  --color-text-h1: #1c1c1c;
+  --color-text-label: #777777;
+  --color-text-value: #999999;
+  --color-pointer: #555555;
+}
+
+body {
+  font-family: "Space Grotesk", sans-serif;
+  background-color:  #dadada;
+  color: --color-text-h1;
+}
+
+h1 {
+  letter-spacing: -1px;
+  font-weight: 700; /* Bold */
+  margin: 0;
+}
