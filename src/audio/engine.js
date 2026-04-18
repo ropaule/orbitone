@@ -3,47 +3,41 @@ import * as Tone from 'tone';
 let synths = [];
 let loops = [];
 let masterVolume = null;
-
-// Stored params — update() writes these, play() reads them
 let currentShift = 0;
 let currentBpm = 120;
 let currentVolume = 70;
 let currentRelease = "8n";
 
+const volumeToDb = (v) => v === 0 ? -Infinity : Tone.gainToDb(v / 100);
+const baseInterval = () => 60 / Math.max(currentBpm, 10);
+
 export function update({ volume, bpm, shift, release } = {}) {
-  // Always store, even before play()
   if (volume !== undefined) currentVolume = volume;
   if (bpm !== undefined) currentBpm = bpm;
   if (shift !== undefined) currentShift = shift;
   if (release !== undefined) currentRelease = release;
 
-  // Apply volume to live audio
   if (masterVolume) {
-    const db = currentVolume === 0 ? -Infinity : Tone.gainToDb(currentVolume / 100);
-    masterVolume.volume.rampTo(db, 0.05);
+    masterVolume.volume.rampTo(volumeToDb(currentVolume), 0.05);
   }
 
-  // Recalculate loop intervals
   if (loops.length > 0) {
-    const base = 60 / Math.max(currentBpm, 10);
+    const base = baseInterval();
     loops.forEach((l, i) => { l.interval = base + i * currentShift; });
   }
 }
 
 export async function play(notes = ["B2", "C3", "G3", "B3", "C4", "E4", "G4", "B4", "D5", "E5"]) {
   if (synths.length > 0) {
-    // Resume from pause
     Tone.getTransport().start();
     return;
   }
 
   await Tone.start();
 
-  // Use stored values from update()
-  const db = currentVolume === 0 ? -Infinity : Tone.gainToDb(currentVolume / 100);
-  masterVolume = new Tone.Volume(db).toDestination();
+  masterVolume = new Tone.Volume(volumeToDb(currentVolume)).toDestination();
 
-  const base = 60 / Math.max(currentBpm, 10);
+  const base = baseInterval();
   synths = notes.map(() => new Tone.Synth().connect(masterVolume));
   loops = notes.map((note, i) =>
     new Tone.Loop((time) => {

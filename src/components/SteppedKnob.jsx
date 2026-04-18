@@ -1,14 +1,14 @@
 import { useRef, useEffect } from 'react';
+import { sizeMap } from './Knob';
 import './Knob.css';
 import './SteppedKnob.css';
+import { useMouseDrag } from '../hooks/useMouseDrag';
 
 export const SteppedKnob = ({ label, steps, value, onChange, size = 'm' }) => {
-  const sizeMap = { xs: 0.4, s: 0.6, m: 1.0, l: 1.5 };
   const scale = sizeMap[size] || 1.0;
 
   const currentIndex = steps.findIndex(s => s.value === value);
   const posRef = useRef(currentIndex);
-  const lastPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     posRef.current = currentIndex;
@@ -20,9 +20,7 @@ export const SteppedKnob = ({ label, steps, value, onChange, size = 'm' }) => {
   const percentage = currentIndex / (N - 1);
   const pointerAngle = percentage * 270 - 135;
 
-  // Dots placed along the same 270° arc as the track.
-  // SVG is CSS-rotated 135°, so the arc stroke begins at SVG's 3 o'clock (east).
-  // Using cos/sin in standard screen-space circle coords (0° = east, clockwise).
+  // Dots along the 270° arc. SVG is CSS-rotated 135°, so arc begins at SVG's 3 o'clock.
   const dots = steps.map((_, i) => {
     const angle = (i / (N - 1)) * 270 * (Math.PI / 180);
     return {
@@ -32,32 +30,12 @@ export const SteppedKnob = ({ label, steps, value, onChange, size = 'm' }) => {
     };
   });
 
-  const handleMouseMove = (e) => {
-    const dx = e.clientX - lastPos.current.x;
-    const dy = lastPos.current.y - e.clientY;
-    const delta = ((dx + dy) / 200) * (N - 1);
-
-    const precisePos = Math.min(N - 1, Math.max(0, posRef.current + delta));
+  const handleMouseDown = useMouseDrag((normalizedDelta) => {
+    const precisePos = Math.min(N - 1, Math.max(0, posRef.current + normalizedDelta * (N - 1)));
     const newIndex = Math.round(precisePos);
-
-    if (newIndex !== Math.round(posRef.current)) {
-      onChange(steps[newIndex].value);
-    }
-
+    if (newIndex !== Math.round(posRef.current)) onChange(steps[newIndex].value);
     posRef.current = precisePos;
-    lastPos.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseUp = () => {
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleMouseDown = (e) => {
-    lastPos.current = { x: e.clientX, y: e.clientY };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-  };
+  });
 
   return (
     <div className="knob-container" style={{ '--knob-scale': scale }}>
