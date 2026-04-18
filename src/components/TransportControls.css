@@ -1,0 +1,46 @@
+.transport-pill {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg, #e0e0e0);
+  border-radius: 999px;
+  box-shadow:
+    6px 6px 12px var(--shadow-dark, #bcbcbc),
+    -6px -6px 12px var(--shadow-light, #f8f8f8);
+  overflow: hidden;
+  margin-bottom: 26px; /* align with knob labels */
+}
+
+.transport-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-label, #777);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.transport-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.transport-btn:hover {
+  color: var(--color-accent, #2e5bc7);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.transport-btn:active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.transport-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--shadow-dark, #bcbcbc);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
