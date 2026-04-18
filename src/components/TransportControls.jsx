@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { play, pause, reset } from '../audio/engine';
 import './TransportControls.css';
 
 const IconSquare = () => (
@@ -19,14 +21,31 @@ const IconPause = () => (
   </svg>
 );
 
-export function TransportControls({ status, onPlayPause, onReset }) {
+export function TransportControls() {
+  const [status, setStatus] = useState('stopped'); // 'stopped' | 'playing' | 'paused'
+
+  const handlePlayPause = async () => {
+    if (status === 'playing') {
+      pause();
+      setStatus('paused');
+    } else {
+      await play();
+      setStatus('playing');
+    }
+  };
+
+  const handleReset = () => {
+    reset();
+    setStatus('stopped');
+  };
+
   return (
     <div className="transport-pill">
-      <button className="transport-btn" onClick={onReset} aria-label="Reset">
+      <button className="transport-btn" onClick={handleReset} aria-label="Reset">
         <IconSquare />
       </button>
       <div className="transport-divider" />
-      <button className="transport-btn" onClick={onPlayPause} aria-label={status === 'playing' ? 'Pause' : 'Play'}>
+      <button className="transport-btn" onClick={handlePlayPause} aria-label={status === 'playing' ? 'Pause' : 'Play'}>
         {status === 'playing' ? <IconPause /> : <IconPlay />}
       </button>
     </div>
