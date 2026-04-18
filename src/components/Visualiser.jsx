@@ -5,8 +5,8 @@ const CX = SIZE / 2;
 const CY = SIZE / 2;
 const MIN_R = 46;
 const MAX_R = 168;
-const TRAIL_LEN = 32;
 const PULSE_MS = 350;
+const TRAIL_ARC = (2 * Math.PI) / 3; // 120° comet tail
 
 // --- Geometry ---
 
@@ -32,18 +32,15 @@ function drawTrack(ctx, r, hue) {
   ctx.stroke();
 }
 
-function drawTrail(ctx, trail, hue) {
-  if (trail.length < 2) return;
-  ctx.lineCap = 'round';
-  for (let t = 0; t < trail.length - 1; t++) {
-    const frac = (t + 1) / trail.length;
-    ctx.beginPath();
-    ctx.moveTo(trail[t].x, trail[t].y);
-    ctx.lineTo(trail[t + 1].x, trail[t + 1].y);
-    ctx.strokeStyle = `hsla(${hue}, 80%, 70%, ${frac * frac * 0.75})`;
-    ctx.lineWidth = frac * 2.5;
-    ctx.stroke();
-  }
+function drawTrail(ctx, r, hue, angle) {
+  const grad = ctx.createConicGradient(angle - TRAIL_ARC, CX, CY);
+  grad.addColorStop(0, `hsla(${hue}, 80%, 70%, 0)`);
+  grad.addColorStop(1 / 3, `hsla(${hue}, 80%, 70%, 0.6)`);
+  ctx.beginPath();
+  ctx.arc(CX, CY, r, angle - TRAIL_ARC, angle);
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
 }
 
 function drawDot(ctx, x, y, hue, pulseFactor) {
@@ -78,7 +75,6 @@ export function Visualiser({ noteEventsRef, notes, bpm, shiftStep, status }) {
   const startedAtRef = useRef(null);
   const pausedAtRef = useRef(null);
   const lastFireRef = useRef(new Array(notes.length).fill(null));
-  const trailsRef = useRef(Array.from({ length: notes.length }, () => []));
 
   useEffect(() => { bpmRef.current = bpm; }, [bpm]);
   useEffect(() => { shiftRef.current = shiftStep; }, [shiftStep]);
@@ -91,7 +87,6 @@ export function Visualiser({ noteEventsRef, notes, bpm, shiftStep, status }) {
       startedAtRef.current = null;
       pausedAtRef.current = null;
       lastFireRef.current = new Array(notes.length).fill(null);
-      trailsRef.current = Array.from({ length: notes.length }, () => []);
     } else if (status === 'playing' && prev === 'stopped') {
       startedAtRef.current = performance.now();
     } else if (status === 'paused' && prev === 'playing') {
@@ -126,23 +121,18 @@ export function Visualiser({ noteEventsRef, notes, bpm, shiftStep, status }) {
       for (let i = 0; i < total; i++) {
         const r = radii[i];
         const hue = hues[i];
+        const isStarted = startedAtRef.current !== null;
 
         let angle = -Math.PI / 2;
-        if (startedAtRef.current !== null) {
+        if (isStarted) {
           const ms = intervalMs(i, bpmRef.current, shiftRef.current);
           angle = voiceAngle(effectiveNow - startedAtRef.current, ms);
         }
 
+        if (isStarted) drawTrail(ctx, r, hue, angle);
+
         const x = CX + r * Math.cos(angle);
         const y = CY + r * Math.sin(angle);
-
-        const trail = trailsRef.current[i];
-        if (statusRef.current === 'playing') {
-          trail.push({ x, y });
-          if (trail.length > TRAIL_LEN) trail.shift();
-        }
-
-        drawTrail(ctx, trail, hue);
 
         const pulseAge = lastFireRef.current[i] !== null
           ? effectiveNow - lastFireRef.current[i]

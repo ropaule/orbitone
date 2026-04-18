@@ -41,6 +41,7 @@ function App() {
 
   useEffect(() => {
     setOnNote((event) => { noteEventsRef.current.push(event); });
+    update({ synth: defaultPreset.synth });
   }, []);
 
   useEffect(() => {

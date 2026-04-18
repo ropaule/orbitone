@@ -11,18 +11,28 @@ let currentVolume = 70;
 let currentRelease = "8n";
 let currentDelay = { wet: 0.2, delayTime: "8n", feedback: 0.35 };
 let currentReverb = { wet: 0.25, decay: 3, preDelay: 0.01 };
+let currentSynth = { type: "synth", release: "8n", options: {} };
 let onNoteCallback = null;
+
+function createSynth() {
+  switch (currentSynth.type) {
+    case "fm": return new Tone.FMSynth(currentSynth.options);
+    case "am": return new Tone.AMSynth(currentSynth.options);
+    default:   return new Tone.Synth(currentSynth.options);
+  }
+}
 
 export function setOnNote(cb) { onNoteCallback = cb; }
 
 const volumeToDb = (v) => v === 0 ? -Infinity : Tone.gainToDb(v / 100);
 const baseInterval = () => 60 / Math.max(currentBpm, 10);
 
-export function update({ volume, bpm, shift, release } = {}) {
+export function update({ volume, bpm, shift, release, synth } = {}) {
   if (volume !== undefined) currentVolume = volume;
   if (bpm !== undefined) currentBpm = bpm;
   if (shift !== undefined) currentShift = shift;
   if (release !== undefined) currentRelease = release;
+  if (synth !== undefined) { currentSynth = synth; currentRelease = synth.release ?? currentRelease; }
 
   if (masterVolume) {
     masterVolume.volume.rampTo(volumeToDb(currentVolume), 0.05);
@@ -54,7 +64,7 @@ export async function play(notes) {
   delay.connect(reverb);
 
   const base = baseInterval();
-  synths = notes.map(() => new Tone.Synth().connect(delay));
+  synths = notes.map(() => createSynth().connect(delay));
   loops = notes.map((note, i) =>
     new Tone.Loop((time) => {
       synths[i].triggerAttackRelease(note, currentRelease, time);
