@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { update, setOnNote, play, pause, reset } from './audio/engine';
+import { useKeyboard } from './hooks/useKeyboard';
 import './App.css';
 import { Knob } from './components/Knob'
 import { SteppedKnob } from './components/SteppedKnob'
@@ -17,6 +18,8 @@ const SHIFT_STEPS = [
 ];
 
 function App() {
+  useKeyboard(defaultPreset.instrument_1);
+
   const [bpm, setBpm] = useState(defaultPreset.bpm);
   const [volume, setVolume] = useState(defaultPreset.volume);
   const [shiftStep, setShiftStep] = useState(defaultPreset.shiftStep);
