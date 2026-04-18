@@ -47,5 +47,14 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
-  align-items: flex-end; /* Aligns the text labels in a straight line */
+  align-items: flex-end;
+}
+
+.circle-placeholder {
+  width: min(380px, calc(100vw - 320px));
+  aspect-ratio: 1;
+  margin: 16px auto 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 8px 8px 20px var(--shadow-dark), inset -8px -8px 20px var(--shadow-light);
 }

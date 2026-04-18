@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { update } from './audio/engine';
+import { useState, useEffect, useRef } from 'react';
+import { update, setOnNote, play, pause, reset } from './audio/engine';
 import './App.css';
 import { Knob } from './components/Knob'
 import { SteppedKnob } from './components/SteppedKnob'
 import { TransportControls } from './components/TransportControls'
+import { Visualiser } from './components/Visualiser'
 import defaultPreset from './presets/default'
 
 // 16 steps: 0 (no shift) on the left, 1/2 on the right
@@ -19,6 +20,28 @@ function App() {
   const [bpm, setBpm] = useState(defaultPreset.bpm);
   const [volume, setVolume] = useState(defaultPreset.volume);
   const [shiftStep, setShiftStep] = useState(defaultPreset.shiftStep);
+  const [status, setStatus] = useState('stopped');
+  const noteEventsRef = useRef([]);
+
+  const handlePlayPause = async () => {
+    if (status === 'playing') {
+      pause();
+      setStatus('paused');
+    } else {
+      await play(defaultPreset.notes);
+      setStatus('playing');
+    }
+  };
+
+  const handleReset = () => {
+    reset();
+    noteEventsRef.current = [];
+    setStatus('stopped');
+  };
+
+  useEffect(() => {
+    setOnNote((event) => { noteEventsRef.current.push(event); });
+  }, []);
 
   useEffect(() => {
     update({ volume, bpm, shift: shiftStep * (60 / bpm) });
@@ -37,13 +60,13 @@ function App() {
             <Knob label="Tempo" size='m' value={bpm} max={1000} onChange={setBpm} />
             <Knob label="Vol" size='m' value={volume} onChange={setVolume} />
             <SteppedKnob label="Shift" size='m' steps={SHIFT_STEPS} value={shiftStep} onChange={setShiftStep} />
-            <TransportControls notes={defaultPreset.notes} />
+            <TransportControls status={status} onPlayPause={handlePlayPause} onReset={handleReset} />
           </div>
         </div>
         <div className="circle-placeholder">
-          Rings...
+          <Visualiser noteEventsRef={noteEventsRef} notes={defaultPreset.notes} bpm={bpm} shiftStep={shiftStep} status={status} />
         </div>
-        <div className='visualizer'>
+        <div className='visualiser'>
         </div>
       </main>
 

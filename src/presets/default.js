@@ -4,4 +4,8 @@ export default {
   bpm: 120,
   volume: 70,
   shiftStep: 1 / 8,
+  fx: {
+    delay: { wet: 0.2, delayTime: "8n", feedback: 0.35 },
+    reverb: { wet: 0.25, decay: 3, preDelay: 0.01 },
+  },
 };
