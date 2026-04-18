@@ -4,6 +4,7 @@ import './App.css';
 import { Knob } from './components/Knob'
 import { SteppedKnob } from './components/SteppedKnob'
 import { TransportControls } from './components/TransportControls'
+import defaultPreset from './presets/default'
 
 // 16 steps: 0 (no shift) on the left, 1/2 on the right
 const SHIFT_STEPS = [
@@ -15,9 +16,9 @@ const SHIFT_STEPS = [
 ];
 
 function App() {
-  const [bpm, setBpm] = useState(120);
-  const [volume, setVolume] = useState(70);
-  const [shiftStep, setShiftStep] = useState(1/8);
+  const [bpm, setBpm] = useState(defaultPreset.bpm);
+  const [volume, setVolume] = useState(defaultPreset.volume);
+  const [shiftStep, setShiftStep] = useState(defaultPreset.shiftStep);
 
   useEffect(() => {
     update({ volume, bpm, shift: shiftStep * (60 / bpm) });
@@ -36,7 +37,7 @@ function App() {
             <Knob label="Tempo" size='m' value={bpm} max={1000} onChange={setBpm} />
             <Knob label="Vol" size='m' value={volume} onChange={setVolume} />
             <SteppedKnob label="Shift" size='m' steps={SHIFT_STEPS} value={shiftStep} onChange={setShiftStep} />
-            <TransportControls />
+            <TransportControls notes={defaultPreset.notes} />
           </div>
         </div>
         <div className="circle-placeholder">

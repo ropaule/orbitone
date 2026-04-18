@@ -21,7 +21,7 @@ const IconPause = () => (
   </svg>
 );
 
-export function TransportControls() {
+export function TransportControls({ notes }) {
   const [status, setStatus] = useState('stopped'); // 'stopped' | 'playing' | 'paused'
 
   const handlePlayPause = async () => {
@@ -29,7 +29,7 @@ export function TransportControls() {
       pause();
       setStatus('paused');
     } else {
-      await play();
+      await play(notes);
       setStatus('playing');
     }
   };

@@ -27,7 +27,7 @@ export function update({ volume, bpm, shift, release } = {}) {
   }
 }
 
-export async function play(notes = ["B2", "C3", "G3", "B3", "C4", "E4", "G4", "B4", "D5", "E5"]) {
+export async function play(notes) {
   if (synths.length > 0) {
     Tone.getTransport().start();
     return;
