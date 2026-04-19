@@ -1,4 +1,5 @@
 import * as Tone from 'tone';
+import { sharedAnalyser } from './analyser';
 
 let synth = null;
 let vol = null;
@@ -19,6 +20,7 @@ export function initInstrument(preset = {}) {
       // Lower lookahead for live-playable instruments (default 0.1s is for scheduled audio)
       Tone.getContext().lookAhead = 0.01;
       vol = new Tone.Volume(preset.volume ?? 0).toDestination();
+      vol.connect(sharedAnalyser);
       synth = createSynth(preset.synth).connect(vol);
     });
   }

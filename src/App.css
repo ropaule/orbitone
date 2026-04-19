@@ -7,9 +7,20 @@
 }
 
 .stage {
-  flex: 1;           /* Takes up the remaining horizontal space */
-  padding: 20px;     /* Space from the top and sides */
-  
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.visualiser {
+  margin-top: auto;
+  /* Break out of the stage padding on three sides for a full-bleed strip */
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-bottom: -20px;
+  height: 130px;
 }
 
 .sidebar {

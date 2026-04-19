@@ -1,4 +1,5 @@
 import * as Tone from 'tone';
+import { sharedAnalyser } from './analyser';
 
 let synths = [];
 let loops = [];
@@ -53,6 +54,7 @@ export async function play(notes) {
   await Tone.start();
 
   masterVolume = new Tone.Volume(volumeToDb(currentVolume)).toDestination();
+  masterVolume.connect(sharedAnalyser);
 
   reverb = new Tone.Reverb({ decay: currentReverb.decay, preDelay: currentReverb.preDelay });
   reverb.wet.value = currentReverb.wet;

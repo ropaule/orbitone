@@ -6,6 +6,7 @@ import { Knob } from './components/Knob'
 import { SteppedKnob } from './components/SteppedKnob'
 import { TransportControls } from './components/TransportControls'
 import { Visualiser } from './components/Visualiser'
+import { EQVisualiser } from './components/EQVisualiser'
 import defaultPreset from './presets/default'
 
 // 16 steps: 0 (no shift) on the left, 1/2 on the right
@@ -82,6 +83,7 @@ function App() {
           <Visualiser noteEventsRef={noteEventsRef} notes={defaultPreset.notes} bpm={bpm} shiftStep={shiftStep} status={status} />
         </div>
         <div className='visualiser'>
+          <EQVisualiser />
         </div>
       </main>
 
