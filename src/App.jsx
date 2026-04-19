@@ -44,12 +44,23 @@ function App() {
 
   useEffect(() => {
     setOnNote((event) => { noteEventsRef.current.push(event); });
-    update({ synth: defaultPreset.synth });
+    update({ synth: defaultPreset.main_instrument });
   }, []);
 
   useEffect(() => {
     update({ volume, bpm, shift: shiftStep * (60 / bpm) });
   }, [volume, bpm, shiftStep]);
+
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.code !== 'Space') return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      e.preventDefault();
+      handlePlayPause();
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [status]); // re-bind when status changes so the closure sees the latest value
 
   return (
     <div className="app-container">

@@ -16,6 +16,8 @@ function createSynth(preset) {
 export function initInstrument(preset = {}) {
   if (!initPromise) {
     initPromise = Tone.start().then(() => {
+      // Lower lookahead for live-playable instruments (default 0.1s is for scheduled audio)
+      Tone.getContext().lookAhead = 0.01;
       vol = new Tone.Volume(preset.volume ?? 0).toDestination();
       synth = createSynth(preset.synth).connect(vol);
     });

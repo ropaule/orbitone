@@ -4,7 +4,7 @@ export default {
   bpm: 120,
   volume: 70,
   shiftStep: 1 / 256,
-  synth: {
+  main_instrument: {
     type: "fm",
     release: "2n",
     options: {
@@ -23,7 +23,7 @@ export default {
       type: "mono",
       options: {
         oscillator: { type: "sawtooth" },
-        envelope: { attack: 0.02, decay: 0.1, sustain: 0.9, release: 0.4 },
+        envelope: { attack: 0.005, decay: 0.1, sustain: 0.9, release: 0.4 },
         filter: { Q: 3, type: "lowpass", rolloff: -24 },
         filterEnvelope: {
           attack: 0.01,
